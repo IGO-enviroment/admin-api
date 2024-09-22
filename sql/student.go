@@ -5,7 +5,7 @@ const GetStudentByEmail = `
 	where s.email = '%s'
 `
 const GetStudentProfile = `
-select s.id, s.email, s.first_name, s.last_name, s.middle_name, s.phone_number, p.bithdate, p.sex, p.description, p.competencies  from public.users s
+select s.id, s.email, s.first_name, s.last_name, s.middle_name, s.phone_number, p.birthdate, p.sex, p.description, p.competencies  from public.users s
 join public.profiles p on p.user_id = s.id                                                            
 where s.email = '%s'
 `
