@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func Login(logger *log.Logger, studentService students.Service) http.Handler {
+func AddStudents(logger *log.Logger, studentService students.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var loginModel gen.Login
 		if err := json.NewDecoder(r.Body).Decode(&loginModel); err != nil {
@@ -32,11 +32,9 @@ func Login(logger *log.Logger, studentService students.Service) http.Handler {
 			return
 		}
 
-		_, err = w.Write(b)
-		if err != nil {
-			logger.Println(err.Error())
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+		w.Header().Add(ContentTypeHeader, JsonContentType)
+		w.Write(b)
+
+		return
 	})
 }
