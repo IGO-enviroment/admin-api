@@ -30,9 +30,9 @@ func NewServer(
 ) *http.Server {
 
 	router := mux.NewRouter().UseEncodedPath()
-	router.Handle("/auth/login", handlers.Login(logger, ss)).Methods("POST")
+	router.Handle("/v1/auth/login", handlers.Login(logger, ss)).Methods("POST")
 
-	api := router.PathPrefix("api").Subrouter()
+	api := router.PathPrefix("v1").Subrouter()
 	api.Use(checkMiddleware.GetCheckAuth)
 
 	return &http.Server{
