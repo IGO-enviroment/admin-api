@@ -55,3 +55,18 @@ type StudentProfile struct {
 	Description  string    `json:"description"`
 	Competencies []string  `json:"competencies"`
 }
+
+type UserOrganization struct {
+	Id             int    `json:"id"`
+	Email          string `json:"email"`
+	FirstName      string `json:"first_name"`
+	LastName       string `json:"last_name"`
+	MiddleName     string `json:"middle_name"`
+	PhoneNumber    string `json:"phone_number"`
+	OrgName        string `json:"org_name"`
+	OrgDescription string `json:"org_description"`
+	INN            string `json:"inn"`
+	KPP            string `json:"kpp"`
+	OGRN           string `json:"ogrn"`
+	Place          string `json:"place"`
+}

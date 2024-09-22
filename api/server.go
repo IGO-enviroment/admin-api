@@ -4,6 +4,7 @@ import (
 	"admin-api/api/handlers"
 	"admin-api/api/middleware"
 	"admin-api/config"
+	"admin-api/usecases/organization"
 	"admin-api/usecases/students"
 	"admin-api/usecases/universities"
 	"context"
@@ -26,6 +27,7 @@ func NewServer(
 	logger *log.Logger,
 	ss students.Service,
 	us universities.Service,
+	orfService organization.Service,
 	checkMiddleware *middleware.CheckTokenManagerMiddleware,
 ) *http.Server {
 	router := mux.NewRouter().UseEncodedPath()
@@ -33,7 +35,7 @@ func NewServer(
 
 	api := router.PathPrefix("/v1").Subrouter()
 	api.Use(checkMiddleware.GetCheckAuth)
-	api.Handle("/profile", middleware.CorsMiddleware(handlers.GetProfile(logger, &settings, ss))).Methods("GET")
+	api.Handle("/profile", middleware.CorsMiddleware(handlers.GetProfile(logger, &settings, ss, orfService))).Methods("GET")
 
 	return &http.Server{
 		Addr: fmt.Sprintf(":%d", settings.Port),

@@ -5,6 +5,7 @@ import (
 	"admin-api/api/middleware"
 	"admin-api/config"
 	"admin-api/postgres"
+	"admin-api/usecases/organization"
 	"admin-api/usecases/students"
 	"admin-api/usecases/universities"
 	"context"
@@ -39,6 +40,7 @@ func (a *App) InitServices() error {
 
 	studentService := students.NewStudentsService(pgDb, a.settings)
 	universitiesService := universities.NewUniversitiesService(pgDb, a.settings)
+	orfService := organization.NewStudentsService(pgDb, a.settings)
 	checkMiddleware := middleware.NewCheckTokenMiddleware(&a.settings)
 
 	a.server = api.NewServer(
@@ -47,6 +49,7 @@ func (a *App) InitServices() error {
 		a.logger,
 		studentService,
 		universitiesService,
+		orfService,
 		checkMiddleware,
 	)
 
