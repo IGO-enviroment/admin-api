@@ -32,7 +32,7 @@ func NewServer(
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
-		AllowCredentials: true,
+		AllowCredentials: false,
 	})
 	router := mux.NewRouter().UseEncodedPath()
 	router.Use(c.Handler)
