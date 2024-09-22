@@ -16,9 +16,6 @@ func GetTokenClaims(r *http.Request, settings *config.Settings) (generation.Acce
 		return generation.AccessTokenClaims{}, err
 	}
 	claims := token.Claims()
-	if !claims.IsUniversity {
-		return generation.AccessTokenClaims{}, err
-	}
 
 	return claims, nil
 }
