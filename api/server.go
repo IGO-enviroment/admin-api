@@ -41,7 +41,7 @@ func NewServer(
 			next.ServeHTTP(w, r)
 		})
 	})
-	router.Handle("/v1/auth/login", handlers.Login(logger, ss)).Methods("POST")
+	router.Handle("/v1/auth/login", handlers.Login(logger, ss)).Methods("POST", "OPTIONS")
 
 	api := router.PathPrefix("v1").Subrouter()
 	api.Use(checkMiddleware.GetCheckAuth)
