@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func GetStudentProfile(logger *log.Logger, settings *config.Settings, studentService students.Service) http.Handler {
+func GetProfile(logger *log.Logger, settings *config.Settings, studentService students.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		claims, err := GetTokenClaims(r, settings)
 		if err != nil {
@@ -18,14 +18,19 @@ func GetStudentProfile(logger *log.Logger, settings *config.Settings, studentSer
 			return
 		}
 
-		profile, err := studentService.GetStudentProfile(claims.Email)
-		if err != nil {
-			logger.Println(fmt.Sprintf("%v", err.Error()))
-			w.WriteHeader(http.StatusBadRequest)
-			return
+		var res interface{}
+
+		if claims.IsStudent {
+			res, err = studentService.GetStudentProfile(claims.Email)
+			if err != nil {
+				logger.Println(fmt.Sprintf("%v", err.Error()))
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
 		}
 
-		b, err := json.Marshal(profile)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		b, err := json.Marshal(res)
 		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)

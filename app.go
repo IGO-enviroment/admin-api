@@ -8,7 +8,6 @@ import (
 	"admin-api/usecases/students"
 	"admin-api/usecases/universities"
 	"context"
-	t "github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"time"
@@ -53,7 +52,7 @@ func (a *App) InitServices() error {
 
 func (a *App) Start() {
 	go func() {
-		if err := http.ListenAndServe(":9091", t.CORS()(a.server.Handler)); err != nil {
+		if err := a.server.ListenAndServe(); err != nil {
 			a.logger.Fatalf("Server didn't start: %v", err)
 		}
 	}()

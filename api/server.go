@@ -34,7 +34,7 @@ func NewServer(
 
 	api := router.PathPrefix("/v1").Subrouter()
 	api.Use(checkMiddleware.GetCheckAuth)
-	api.Handle("/profile", handlers.GetStudentProfile(logger, &settings, ss)).Methods("GET")
+	api.Handle("/profile", handlers.GetProfile(logger, &settings, ss)).Methods("GET")
 
 	return &http.Server{
 		Addr: fmt.Sprintf(":%d", settings.Port),

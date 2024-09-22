@@ -1,31 +1,45 @@
 package handlers
 
 import (
+	"admin-api/config"
 	"admin-api/gen"
-	"admin-api/usecases/students"
+	"admin-api/usecases/universities"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
 
-func AddStudents(logger *log.Logger, studentService students.Service) http.Handler {
+func AddStudents(logger *log.Logger, setting *config.Settings, universityService universities.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var loginModel gen.Login
-		if err := json.NewDecoder(r.Body).Decode(&loginModel); err != nil {
+		claims, err := GetTokenClaims(r, setting)
+		if err != nil {
+			logger.Println(fmt.Sprintf("%v", err.Error()))
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		if !claims.IsUniversity {
+			logger.Println("request from not university")
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		var requestBody gen.AddStudent
+		if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		tokenResponse, err := studentService.Authenticate(loginModel)
+		response, err := universityService.AddStudents(requestBody)
 		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		b, err := json.Marshal(tokenResponse)
+		b, err := json.Marshal(response)
 		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
