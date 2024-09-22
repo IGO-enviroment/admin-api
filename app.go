@@ -8,8 +8,11 @@ import (
 	"admin-api/usecases/students"
 	"admin-api/usecases/universities"
 	"context"
+	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -51,11 +54,17 @@ func (a *App) InitServices() error {
 }
 
 func (a *App) Start() {
-	go func() {
-		if err := http.ListenAndServe(":9091", middleware.CorsMiddleware(a.server.Handler)); err != nil {
-			a.logger.Fatalf("Server didn't start: %v", err)
-		}
-	}()
+	host := fmt.Sprintf(":%s", strconv.Itoa(a.settings.Port))
+	tcpListener, err := net.Listen("tcp", host)
+	if err != nil {
+		log.Panicf("TCP listener wasn't created: %s", err)
+	}
+
+	a.server = &http.Server{
+		Addr:    host,
+		Handler: a.server.Handler,
+	}
+	go a.server.Serve(tcpListener)
 }
 
 func (a *App) Stop(getContext func(time.Duration) (context.Context, context.CancelFunc)) error {
