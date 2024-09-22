@@ -35,7 +35,7 @@ func NewServer(
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 		AllowCredentials: false,
 	})
-	router.Handle("/v1/auth/login", c.Handler(handlers.Login(logger, ss))).Methods("POST")
+	router.Handle("/v1/auth/login", handlers.Login(logger, ss)).Methods("POST")
 
 	api := router.PathPrefix("/v1").Subrouter()
 	api.Use(checkMiddleware.GetCheckAuth)
