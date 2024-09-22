@@ -1,5 +1,7 @@
 package gen
 
+import "time"
+
 const (
 	AuthorizationScopes = "authorization.Scopes"
 	OriginScopes        = "origin.Scopes"
@@ -39,4 +41,17 @@ type Student struct {
 type TokenReponse struct {
 	AccessToken string `json:"accessToken"`
 	ExpiresIn   int64  `json:"expiresIn"`
+}
+
+type StudentProfile struct {
+	Id           int       `json:"id"`
+	Email        string    `json:"email"`
+	FirstName    string    `json:"firstName"`
+	LastName     string    `json:"lastName"`
+	MiddleName   string    `json:"middleName"`
+	PhoneNumber  string    `json:"phoneNumber"`
+	Birthdate    time.Time `json:"birthdate"`
+	Sex          string    `json:"sex"`
+	Description  string    `json:"description"`
+	Competencies []string  `json:"competencies"`
 }

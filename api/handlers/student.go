@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"admin-api/gen"
+	"admin-api/config"
 	"admin-api/usecases/students"
 	"encoding/json"
 	"fmt"
@@ -9,23 +9,23 @@ import (
 	"net/http"
 )
 
-func AddStudents(logger *log.Logger, studentService students.Service) http.Handler {
+func GetStudentProfile(logger *log.Logger, settings *config.Settings, studentService students.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var loginModel gen.Login
-		if err := json.NewDecoder(r.Body).Decode(&loginModel); err != nil {
+		claims, err := GetTokenClaims(r, settings)
+		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
-			w.WriteHeader(http.StatusBadRequest)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		tokenResponse, err := studentService.Authenticate(loginModel)
+		profile, err := studentService.GetStudentProfile(claims.Email)
 		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		b, err := json.Marshal(tokenResponse)
+		b, err := json.Marshal(profile)
 		if err != nil {
 			logger.Println(fmt.Sprintf("%v", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
@@ -39,4 +39,5 @@ func AddStudents(logger *log.Logger, studentService students.Service) http.Handl
 			return
 		}
 	})
+
 }

@@ -28,7 +28,7 @@ func (middleware *CheckTokenManagerMiddleware) GetCheckAuth(next http.Handler) h
 		authScopes, ok := r.Context().Value("authorization.Scopes").([]string)
 		if !ok {
 			log.Println("can't convert authorizationScopes to []string")
-			next.ServeHTTP(w, r)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
