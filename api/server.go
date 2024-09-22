@@ -8,6 +8,7 @@ import (
 	"admin-api/usecases/universities"
 	"context"
 	"fmt"
+	"github.com/rs/cors"
 	"log"
 	"net"
 	"net/http"
@@ -28,8 +29,13 @@ func NewServer(
 	us universities.Service,
 	checkMiddleware *middleware.CheckTokenManagerMiddleware,
 ) *http.Server {
-
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
+	})
 	router := mux.NewRouter().UseEncodedPath()
+	router.Use(c.Handler)
 	router.Handle("/v1/auth/login", handlers.Login(logger, ss)).Methods("POST")
 
 	api := router.PathPrefix("/v1").Subrouter()

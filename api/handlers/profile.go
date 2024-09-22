@@ -20,7 +20,7 @@ func GetProfile(logger *log.Logger, settings *config.Settings, studentService st
 
 		var res interface{}
 
-		if claims.IsStudent {
+		if true {
 			res, err = studentService.GetStudentProfile(claims.Email)
 			if err != nil {
 				logger.Println(fmt.Sprintf("%v", err.Error()))
@@ -37,6 +37,7 @@ func GetProfile(logger *log.Logger, settings *config.Settings, studentService st
 			return
 		}
 
+		w.Header().Add(ContentTypeHeader, JsonContentType)
 		_, err = w.Write(b)
 		if err != nil {
 			logger.Println(err.Error())
